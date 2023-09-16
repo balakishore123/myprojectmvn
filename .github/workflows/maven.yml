@@ -55,10 +55,17 @@ jobs:
         # Write the new version back to the VERSION file
         echo "$NEW_VERSION" > VERSION
         echo "Bumped version to $NEW_VERSION"
-
       # Commit and push the updated version
       env:
         GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}
+
+    - name: latest current version
+      id: write_version
+      run: |
+        echo "present working direcrtory"
+        pwd && ls -la
+        VERSION=$(cat VERSION)
+        echo "::set-output name=version::$NEW_VERSION"      
 
     - name: Commit and Push
       run: |
@@ -86,5 +93,5 @@ jobs:
 
     - uses: actions/upload-artifact@v3
       with:
-        name: my-artifact-package.${{ steps.read_version.outputs.version }}
+        name: my-artifact-package.${{ steps.write_version.outputs.version }}
         path: ${{ github.workspace }}/target/my-app-1.0-SNAPSHOT.jar
