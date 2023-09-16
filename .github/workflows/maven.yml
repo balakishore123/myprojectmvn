@@ -86,5 +86,5 @@ jobs:
 
     - uses: actions/upload-artifact@v3
       with:
-        name: my-artifact-package
+        name: my-artifact-package.${{ steps.read_version.outputs.version }}
         path: ${{ github.workspace }}/target/my-app-1.0-SNAPSHOT.jar
