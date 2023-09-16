@@ -64,7 +64,7 @@ jobs:
         git push https://github.com/balakishore123/myprojectmvn.git HEAD:main
         git push --force
       env:
-        GITHUB_TOKEN: "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"
+        GITHUB_TOKEN: "${{ secrets.TOKEN_GITHUB }}"
 
 
     - uses: actions/checkout@v3
