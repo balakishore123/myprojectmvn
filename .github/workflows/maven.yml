@@ -65,7 +65,7 @@ jobs:
         echo "present working direcrtory"
         pwd && ls -la
         VERSION=$(cat VERSION)
-        echo "::set-output name=version::$VERSION"      
+        echo "::set-output name=version::$VERSION"
 
     - name: Commit and Push
       run: |
