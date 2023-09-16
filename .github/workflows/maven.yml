@@ -1,0 +1,83 @@
+# This workflow will build a Java project with Maven, and cache/restore any dependencies to improve the workflow execution time
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-maven
+
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+
+name: Java CI with Maven
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+
+    - name: Present workign directory
+      run: pwd
+
+    - name: Read current version
+      id: read_version
+      run: |
+        echo "present working direcrtory"
+        pwd && ls -la
+        VERSION=$(cat VERSION)
+        echo "::set-output name=version::$VERSION"
+
+    - name: Bump Version
+      id: bump_version
+      run: |
+        # Read the current version from the previous step's output
+        CURRENT_VERSION="${{ steps.read_version.outputs.version }}"
+        
+        # Calculate the new version (for example, increment the minor version)
+        IFS='.' read -r -a version_parts <<< "$CURRENT_VERSION"
+        NEW_MINOR_VERSION=$((version_parts[1] + 1))
+        NEW_VERSION="${version_parts[0]}.${NEW_MINOR_VERSION}.${version_parts[2]}"
+        
+        # Write the new version back to the VERSION file
+        echo "$NEW_VERSION" > VERSION
+        echo "Bumped version to $NEW_VERSION"
+
+      # Commit and push the updated version
+      env:
+        GITHUB_TOKEN: ${{ secrets.TOKEN_GITHUB }}
+
+    - name: Commit and Push
+      run: |
+        git config user.name "balakishore123"
+        git config user.email "balakishore096@gmail.com"
+        git add VERSION
+        git commit -m "Bump version to $NEW_VERSION"
+        git push --force
+      env:
+        GITHUB_TOKEN: "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"
+
+
+    - uses: actions/checkout@v3
+    - name: Set up JDK 17
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        cache: maven
+
+    - name: Build with Maven
+      run: mvn -B package --file pom.xml
+
+    - uses: actions/upload-artifact@v3
+      with:
+        name: my-artifact-package
+        path: ${{ github.workspace }}/target/my-app-1.0-SNAPSHOT.jar
