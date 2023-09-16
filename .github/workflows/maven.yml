@@ -60,8 +60,9 @@ jobs:
         git config user.name "balakishore123"
         git config user.email "balakishore096@gmail.com"
         git add VERSION
+        git status
         git commit -m "Bump version to $NEW_VERSION"
-        git push https://github.com/balakishore123/myprojectmvn.git HEAD:main
+        git status
         git push --force
       env:
         GITHUB_TOKEN: "${{ secrets.TOKEN_GITHUB }}"
